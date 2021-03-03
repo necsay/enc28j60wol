@@ -2,6 +2,7 @@
 
 
 A project to use Arduino as a WOL server.
+
 Components: Arduino Board(ATmega328P) and ENC28J60 ethernet board.
 
 Pin configuration for ENC28J60 
