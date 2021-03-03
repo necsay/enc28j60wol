@@ -16,9 +16,9 @@ byte gateway[] = {192, 168, 1, 1}; // Gateway
 EthernetServer localServer(80);         //server port 80 HTTP
 EthernetUDP udp;
 
-const char remoteServer[] = "www.arduino.cc"; //remote server
-const char host[]= "Host: www.arduino.cc";
-const char page[]= "GET /latest.txt HTTP/1.1"; // request www.arduino.cc/latest.txt
+const char remoteServer[] = "www.arduino.cc"; // Remote server address for connection
+const char host[]= "Host: www.arduino.cc";    // Remote server address for GET request
+const char page[]= "GET /latest.txt HTTP/1.1"; // Request http://www.arduino.cc/latest.txt
  
  //remote server
 EthernetClient remoteClient;
@@ -26,10 +26,9 @@ EthernetClient remoteClient;
 String localString;
 String remoteString;
 
-unsigned long lastConnection = 0;           // time of the last connection to remote server
+unsigned long lastConnection = 0;           // Time of the last connection to the remote server
 
-const unsigned long repeatTimer = 1000 * 25; 
-//repeatTimer *= 25;  // repeating frequency in seconds to send requests to server
+const unsigned long repeatTimer = 1000 * 25; // Repeat every 25 seconds.
 
 // Mac Addresses for your devices  
 // Note: MAC addresses are hexadecimal hence we use 0x notation
@@ -97,7 +96,7 @@ void setup(){
 	  
 	localServer.begin();
 	
-//	Serial.begin(9600);
+//	Serial.begin(9600);       //optional for debugging
 
 }
 
@@ -114,7 +113,7 @@ int sendwol( byte *targetMac){                           // function for wake on
 	for (int i = 0; i < 6; i++) udp.write(0xFF);           // Write first 6 FF HEX values of magic packet.
 	  
 	  
-	//for (byte i = 0; i < 16; i++) udp.write(targetMac,6); //If you haven't placed your MAC addresses in PROGMEM use this instead of following function 
+	//for (byte i = 0; i < 16; i++) udp.write(targetMac,6); //If you haven't placed your MAC addresses in PROGMEM use this instead of the following function 
 
 	for (byte i = 0; i<16;i++){                            
 	for (byte i = 0; i < 6; i ++) udp.write(pgm_read_byte(&targetMac[i]));       
@@ -278,11 +277,7 @@ void httpRequest() {
 		lastConnection = millis();
 
 	} else {
-
-    // if you couldn't make a connection:
-
-	//Serial.println("connection failed");
-
+	//Serial.println("Failed to connect"); //optional for debugging.
 	}
    	
 	if(remoteString.indexOf(F("computer50")) >0) sendwol(targetMac50);
