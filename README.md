@@ -4,6 +4,13 @@
 A project to use Arduino as a WOL server.
 Components: Arduino Board(ATmega328P) and ENC28J60 ethernet board.
 
+Pin configuration for ENC28J60 
+VCC => 3.3V
+GND => GND
+CS  => pin 10
+SI  => pin 11
+SO  => pin 12
+SCK => pin 13
 
 LocalHTTPserver.ino: Wake up computers on local network by hosting an HTTP page.
 
