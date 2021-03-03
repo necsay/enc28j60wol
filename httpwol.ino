@@ -256,19 +256,18 @@ void loop(){
 
 void httpRequest() {
 
-  // close any connection before send a new request.
 
-  // This will free the socket on the WiFi shield
 
 	remoteClient.stop();
 
-  // if there's a successful connection:
-
-	if (remoteClient.connect(remoteServer, 80)) {
+	if (remoteClient.connect(remoteServer, 80)) { //if the connection was successful
 
 		remoteClient.println(page);
+		//Instead of defining a const char you could also use the following line
 		//remoteClient.println("GET /latest.txt HTTP/1.1");
+		
 		remoteClient.println(host);
+		//Instead of defining a const char you could also use the following line
 		//remoteClient.println("Host: www.arduino.com");
 
 		remoteClient.println("Connection: close");
