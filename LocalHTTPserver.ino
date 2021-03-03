@@ -10,12 +10,9 @@ byte myDns[] = {192, 168, 1, 1};   // Internet connection is not required on thi
 
 byte gateway[] = {192, 168, 1, 1}; // Gateway, if your gateway is 192.168.1.1 you can uncomment to save space
 
-// In case you change these variables do not forget to update : line 87
-// Ethernet.begin(mac, ip, myDns, gateway);
+// In case you change these variables do not forget to update : Ethernet.begin(mac, ip, myDns, gateway);
 
-
-
-EthernetServer localServer(80);         //server port 80 HTTP
+EthernetServer localServer(80);  // You can use any port, the default 80 is selected for ease of use.
 EthernetUDP udp;
 
 String localString;
