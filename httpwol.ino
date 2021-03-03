@@ -7,16 +7,29 @@ byte mac[] = { 0x74,0x69,0x69,0x2D,0x30,0x31 }; //setting up a mac address for e
 
 byte ip[] = { 192, 168, 1, 177 };  // local IP address for enc28j60
 
-//byte myDns[] = {192, 168, 1, 1};
-// DNS is not really required in this setup
-// Should you require a specific need for name resolution you can uncomment
-// Another example {8, 8, 8, 8}
+byte myDns[] = {192, 168, 1, 1};   // DNS
+
+byte gateway[] = {192, 168, 1, 1}; // Gateway
+
+
 
 EthernetServer localServer(80);         //server port 80 HTTP
 EthernetUDP udp;
 
-String localString;
+const char remoteServer[] = "www.arduino.cc"; //remote server
+const char host[]= "Host: www.arduino.cc";
+const char page[]= "GET /latest.txt HTTP/1.1"; // request www.arduino.cc/latest.txt
+ 
+ //remote server
+EthernetClient remoteClient;
 
+String localString;
+String remoteString;
+
+unsigned long lastConnection = 0;           // time of the last connection to remote server
+
+const unsigned long repeatTimer = 1000 * 25; 
+//repeatTimer *= 25;  // repeating frequency in seconds to send requests to server
 
 // Mac Addresses for your devices  
 // Note: MAC addresses are hexadecimal hence we use 0x notation
@@ -71,56 +84,7 @@ const PROGMEM byte targetMac47[6] = {0x47,0x69,0x69,0x2D,0x30,0xAA};
 const PROGMEM byte targetMac48[6] = {0x48,0x69,0x69,0x2D,0x30,0xAA};
 const PROGMEM byte targetMac49[6] = {0x49,0x69,0x69,0x2D,0x30,0xAA};
 const PROGMEM byte targetMac50[6] = {0x50,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac51[6] = {0x51,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac52[6] = {0x52,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac53[6] = {0x53,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac54[6] = {0x54,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac55[6] = {0x55,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac56[6] = {0x56,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac57[6] = {0x57,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac58[6] = {0x58,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac59[6] = {0x59,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac60[6] = {0x60,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac61[6] = {0x61,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac62[6] = {0x62,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac63[6] = {0x63,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac64[6] = {0x64,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac65[6] = {0x65,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac66[6] = {0x66,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac67[6] = {0x67,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac68[6] = {0x68,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac69[6] = {0x69,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac70[6] = {0x70,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac71[6] = {0x71,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac72[6] = {0x72,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac73[6] = {0x73,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac74[6] = {0x74,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac75[6] = {0x75,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac76[6] = {0x76,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac77[6] = {0x77,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac78[6] = {0x78,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac79[6] = {0x79,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac80[6] = {0x80,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac81[6] = {0x81,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac82[6] = {0x82,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac83[6] = {0x83,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac84[6] = {0x84,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac85[6] = {0x85,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac86[6] = {0x86,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac87[6] = {0x87,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac88[6] = {0x88,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac89[6] = {0x89,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac90[6] = {0x90,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac91[6] = {0x91,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac92[6] = {0x92,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac93[6] = {0x93,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac94[6] = {0x94,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac95[6] = {0x95,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac96[6] = {0x96,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac97[6] = {0x97,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac98[6] = {0x98,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac99[6] = {0x99,0x69,0x69,0x2D,0x30,0xAA};
-const PROGMEM byte targetMac100[6] = {0x10,0xAA,0xAA,0xAA,0xAA,0xAA};
+
 
  
 
@@ -128,12 +92,13 @@ void setup(){
 //  digitalWrite(resetPin,HIGH);    //uncomment for HARD-RESET
 //  pinMode(resetPin,OUTPUT);       //uncomment for HARD-RESET
 
-Ethernet.begin(mac, ip);
 
-// Ethernet.begin(mac, ip, myDns); // uncomment for DNS
+	Ethernet.begin(mac, ip, myDns, gateway);
+	  
+	localServer.begin();
+	
+//	Serial.begin(9600);
 
-  
-  localServer.begin();
 }
 
 //void(* resetFunc) (void) = 0;   //uncomment for SOFT-RESET
@@ -141,193 +106,235 @@ Ethernet.begin(mac, ip);
 // A magic packet consists of 6 FF HEX values followed by mac address repeated 16 times
 
 int sendwol( byte *targetMac){                           // function for wake on lan signal
-  udp.beginPacket(IPAddress(255,255,255,255),9);         // broadcast to whole network from port 9 
+	
+	udp.beginPacket(IPAddress(255,255,255,255),9);         // broadcast to whole network from port 9 
   
 //note: broadcast does not involve IP addresses it's a data link layer signal.
   
-  for (int i = 0; i < 6; i++) udp.write(0xFF);           // Write first 6 FF HEX values of magic packet.
-  
-  
-//for (byte i = 0; i < 16; i++) udp.write(targetMac,6); //If you haven't placed your MAC addresses in PROGMEM use this instead of following function 
+	for (int i = 0; i < 6; i++) udp.write(0xFF);           // Write first 6 FF HEX values of magic packet.
+	  
+	  
+	//for (byte i = 0; i < 16; i++) udp.write(targetMac,6); //If you haven't placed your MAC addresses in PROGMEM use this instead of following function 
 
-  for (byte i = 0; i<16;i++){                            
-  for (byte i = 0; i < 6; i ++) udp.write(pgm_read_byte(&targetMac[i]));       
-//Read MAC address from PROGMEM and add to udp.write packet 16 times
-  }
+	for (byte i = 0; i<16;i++){                            
+	for (byte i = 0; i < 6; i ++) udp.write(pgm_read_byte(&targetMac[i]));       
+	//Read MAC address from PROGMEM and add to udp.write packet 16 times
+	}
   
-  udp.endPacket();  // Seal the packet and send
-  udp.stop();
+	udp.endPacket();  // Seal the packet and send
+	udp.stop();
 }
  
 void loop(){
 
-//if (millis()>600000) resetFunc();           // uncomment for SOFT-RESET every 600 seconds
+//	if (millis()>600000) resetFunc();           // uncomment for SOFT-RESET every 600 seconds
 //  if (millis()>600000) digitalWrite(resetPin,LOW);     //uncomment for HARD-RESET every 600 seconds
+
+
+	if (remoteClient.available()) {
+		
+		char d = remoteClient.read();
+		remoteString += d;
+	}
   
-  EthernetClient localClient = localServer.available();   // Create a client connection
-  if (localClient) {
-    while (localClient.connected()) {
-      if (localClient.available()) {
-        char c = localClient.read(); //read char by char HTTP request
- 
-        if (localString.length() < 100) {
-          //store characters 1 by 1 to string
-          localString += c;
-        }
- 
-        //if HTTP request has ended
-        if (c == '\n') {
+	EthernetClient localClient = localServer.available();   // Create a client connection
+	if (localClient) {
+		while (localClient.connected()) {
+			if (localClient.available()) {
+				
+				char c = localClient.read(); //read char by char HTTP request
+				if (localString.length() < 100) localString += c;
+			  //store characters 1 by 1 to string
+	 
+			//if HTTP request has ended
+				if (c == '\n') {
 
-  // YOUR HTML WEB PAGE IS HERE
-  //I wouldn't recommend putting a direct link in web page because anyone can run your computer if IP is obtained.
+	  // YOUR HTML WEB PAGE IS HERE
+	  //I wouldn't recommend putting a direct link in web page because anyone can run your computer if IP is obtained.
 
-localClient.println(F("<br><style>body{background:tan}*{font-size:18pt}</style>Enter PC ID: <input id=\"t\"> <button onclick=\"location.href='?'+document.getElementById('t').value\">TURN ON<title>MY REMOTE"));
+					localClient.println(F("<br><style>body{background:tan}*{font-size:18pt}</style>Enter PC ID: <input id=\"t\"> <button onclick=\"location.href='?'+document.getElementById('t').value\">TURN ON<title>MY REMOTE"));
 
-// You could also do localClient.println(""); if you don't want to use PROGMEM.
-// A single line is better for ram management
-// However, if that is not an issue multiple localClient.println functions could be utilized
- 
-          delay(1);
-          //stopping client
-          client.stop();
+	// You could also do localClient.println(""); if you don't want to use PROGMEM.
+	// A single line is better for ram management
+	// However, if that is not an issue multiple localClient.println functions could be utilized
+	 
+					delay(1);
+					//stopping client
+					localClient.stop();
 
-// All set up, here we need to analyize the string localString which is simply the URL requested by browser
+	// All set up, here we need to analyize the string localString which is simply the URL requested by browser
 
-/* Here is an example empty localString:
-GET /? HTTP/1.1
+	/* Here is an example empty localString:
+	GET /? HTTP/1.1
 
-GET /favicon.ico HTTP/1.1
-*/
+	GET /favicon.ico HTTP/1.1
+	*/
 
-// On this URL nothing was typed into the box, so it is minimal string
-/* When we enter test string to box we get:
-GET /?test%20string HTTP/1.1
+	// On this URL nothing was typed into the box, so it is minimal string
+	/* When we enter test string to box we get:
+	GET /?test%20string HTTP/1.1
 
-GET /favicon.ico HTTP/1.1
-*/
-// Notice "%20" which is simply a single space
+	GET /favicon.ico HTTP/1.1
+	*/
+	// Notice "%20" which is simply a single space
 
-// In the following section we will be using indexOf method I suggest looking it up.
-// IndexOf will check if the entered text includes the text you give it.
-// Be vary if you do Computer200 that includes Computer2 as well
-// So the ideal case would be looking for Computer002 instead of Computer200
-// However for using less ram I'm using computer2 instead of computer 200
-// For this reason I 
-
-          if(localString.indexOf(F("computer100")) >0) sendwol(targetMac100);
-          // Computer 100 is your-pc-id-link, you will have to enter this link
-          // Example "HP%20server%20xyzfc" so when you enter to box "HP server password" it boots the corresponding server. 
-          // YOU HAVE TO PUT LONGEST STRINGS ON TOP, if you put computer2 on top, even if you type computer200 the computer2 will fire up because "computer200" includes "computer2".
-          // Do not use if instead of else if because you will end up waking up more computers because of the reason I just pointed out.
+	// In the following section we will be using indexOf method I suggest looking it up.
+	// IndexOf will check if the entered text includes the text you give it.
+	// Be vary if you do Computer200 that includes Computer2 as well so choose names wisely
+	// Suppose you set a wake up for computer, and another for personal computer
+	// So when you type personal computer on your box
+	// You will end up waking both "personal computer" and "computer" up
+	// So the ideal case would be doing it like "Computer001" instead of "Computer1"
 
 
+					if(localString.indexOf(F("computer50")) >0) sendwol(targetMac50);
 
-          else if(localString.indexOf(F("computer99")) >0) sendwol(targetMac99);
-          else if(localString.indexOf(F("computer98")) >0) sendwol(targetMac98);
-          else if(localString.indexOf(F("computer97")) >0) sendwol(targetMac97);
-          else if(localString.indexOf(F("computer96")) >0) sendwol(targetMac96);
-          else if(localString.indexOf(F("computer95")) >0) sendwol(targetMac95);
-          else if(localString.indexOf(F("computer94")) >0) sendwol(targetMac94);
-          else if(localString.indexOf(F("computer93")) >0) sendwol(targetMac93);
-          else if(localString.indexOf(F("computer92")) >0) sendwol(targetMac92);
-          else if(localString.indexOf(F("computer91")) >0) sendwol(targetMac91);
-          else if(localString.indexOf(F("computer90")) >0) sendwol(targetMac90);
-          else if(localString.indexOf(F("computer89")) >0) sendwol(targetMac89);
-          else if(localString.indexOf(F("computer88")) >0) sendwol(targetMac88);
-          else if(localString.indexOf(F("computer87")) >0) sendwol(targetMac87);
-          else if(localString.indexOf(F("computer86")) >0) sendwol(targetMac86);
-          else if(localString.indexOf(F("computer85")) >0) sendwol(targetMac85);
-          else if(localString.indexOf(F("computer84")) >0) sendwol(targetMac84);
-          else if(localString.indexOf(F("computer83")) >0) sendwol(targetMac83);
-          else if(localString.indexOf(F("computer82")) >0) sendwol(targetMac82);
-          else if(localString.indexOf(F("computer81")) >0) sendwol(targetMac81);
-          else if(localString.indexOf(F("computer80")) >0) sendwol(targetMac80);
-          else if(localString.indexOf(F("computer79")) >0) sendwol(targetMac79);
-          else if(localString.indexOf(F("computer78")) >0) sendwol(targetMac78);
-          else if(localString.indexOf(F("computer77")) >0) sendwol(targetMac77);
-          else if(localString.indexOf(F("computer76")) >0) sendwol(targetMac76);
-          else if(localString.indexOf(F("computer75")) >0) sendwol(targetMac75);
-          else if(localString.indexOf(F("computer74")) >0) sendwol(targetMac74);
-          else if(localString.indexOf(F("computer73")) >0) sendwol(targetMac73);
-          else if(localString.indexOf(F("computer72")) >0) sendwol(targetMac72);
-          else if(localString.indexOf(F("computer71")) >0) sendwol(targetMac71);
-          else if(localString.indexOf(F("computer70")) >0) sendwol(targetMac70);
-          else if(localString.indexOf(F("computer69")) >0) sendwol(targetMac69);
-          else if(localString.indexOf(F("computer68")) >0) sendwol(targetMac68);
-          else if(localString.indexOf(F("computer67")) >0) sendwol(targetMac67);
-          else if(localString.indexOf(F("computer66")) >0) sendwol(targetMac66);
-          else if(localString.indexOf(F("computer65")) >0) sendwol(targetMac65);
-          else if(localString.indexOf(F("computer64")) >0) sendwol(targetMac64);
-          else if(localString.indexOf(F("computer63")) >0) sendwol(targetMac63);
-          else if(localString.indexOf(F("computer62")) >0) sendwol(targetMac62);
-          else if(localString.indexOf(F("computer61")) >0) sendwol(targetMac61);
-          else if(localString.indexOf(F("computer60")) >0) sendwol(targetMac60);
-          else if(localString.indexOf(F("computer59")) >0) sendwol(targetMac59);
-          else if(localString.indexOf(F("computer58")) >0) sendwol(targetMac58);
-          else if(localString.indexOf(F("computer57")) >0) sendwol(targetMac57);
-          else if(localString.indexOf(F("computer56")) >0) sendwol(targetMac56);
-          else if(localString.indexOf(F("computer55")) >0) sendwol(targetMac55);
-          else if(localString.indexOf(F("computer54")) >0) sendwol(targetMac54);
-          else if(localString.indexOf(F("computer53")) >0) sendwol(targetMac53);
-          else if(localString.indexOf(F("computer52")) >0) sendwol(targetMac52);
-          else if(localString.indexOf(F("computer51")) >0) sendwol(targetMac51);
-          else if(localString.indexOf(F("computer50")) >0) sendwol(targetMac50);
-          else if(localString.indexOf(F("computer49")) >0) sendwol(targetMac49);
-          else if(localString.indexOf(F("computer48")) >0) sendwol(targetMac48);
-          else if(localString.indexOf(F("computer47")) >0) sendwol(targetMac47);
-          else if(localString.indexOf(F("computer46")) >0) sendwol(targetMac46);
-          else if(localString.indexOf(F("computer45")) >0) sendwol(targetMac45);
-          else if(localString.indexOf(F("computer44")) >0) sendwol(targetMac44);
-          else if(localString.indexOf(F("computer43")) >0) sendwol(targetMac43);
-          else if(localString.indexOf(F("computer42")) >0) sendwol(targetMac42);
-          else if(localString.indexOf(F("computer41")) >0) sendwol(targetMac41);
-          else if(localString.indexOf(F("computer40")) >0) sendwol(targetMac40);
-          else if(localString.indexOf(F("computer39")) >0) sendwol(targetMac39);
-          else if(localString.indexOf(F("computer38")) >0) sendwol(targetMac38);
-          else if(localString.indexOf(F("computer37")) >0) sendwol(targetMac37);
-          else if(localString.indexOf(F("computer36")) >0) sendwol(targetMac36);
-          else if(localString.indexOf(F("computer35")) >0) sendwol(targetMac35);
-          else if(localString.indexOf(F("computer34")) >0) sendwol(targetMac34);
-          else if(localString.indexOf(F("computer33")) >0) sendwol(targetMac33);
-          else if(localString.indexOf(F("computer32")) >0) sendwol(targetMac32);
-          else if(localString.indexOf(F("computer31")) >0) sendwol(targetMac31);
-          else if(localString.indexOf(F("computer30")) >0) sendwol(targetMac30);
-          else if(localString.indexOf(F("computer29")) >0) sendwol(targetMac29);
-          else if(localString.indexOf(F("computer28")) >0) sendwol(targetMac28);
-          else if(localString.indexOf(F("computer27")) >0) sendwol(targetMac27);
-          else if(localString.indexOf(F("computer26")) >0) sendwol(targetMac26);
-          else if(localString.indexOf(F("computer25")) >0) sendwol(targetMac25);
-          else if(localString.indexOf(F("computer24")) >0) sendwol(targetMac24);
-          else if(localString.indexOf(F("computer23")) >0) sendwol(targetMac23);
-          else if(localString.indexOf(F("computer22")) >0) sendwol(targetMac22);
-          else if(localString.indexOf(F("computer21")) >0) sendwol(targetMac21);
-          else if(localString.indexOf(F("computer20")) >0) sendwol(targetMac20);
-          else if(localString.indexOf(F("computer19")) >0) sendwol(targetMac19);
-          else if(localString.indexOf(F("computer18")) >0) sendwol(targetMac18);
-          else if(localString.indexOf(F("computer17")) >0) sendwol(targetMac17);
-          else if(localString.indexOf(F("computer16")) >0) sendwol(targetMac16);
-          else if(localString.indexOf(F("computer15")) >0) sendwol(targetMac15);
-          else if(localString.indexOf(F("computer14")) >0) sendwol(targetMac14);
-          else if(localString.indexOf(F("computer13")) >0) sendwol(targetMac13);
-          else if(localString.indexOf(F("computer12")) >0) sendwol(targetMac12);
-          else if(localString.indexOf(F("computer11")) >0) sendwol(targetMac11);
-          else if(localString.indexOf(F("computer10")) >0) sendwol(targetMac10);
-          else if(localString.indexOf(F("computer9")) >0) sendwol(targetMac9);
-          else if(localString.indexOf(F("computer8")) >0) sendwol(targetMac8);
-          else if(localString.indexOf(F("computer7")) >0) sendwol(targetMac7);
-          else if(localString.indexOf(F("computer6")) >0) sendwol(targetMac6);
-          else if(localString.indexOf(F("computer5")) >0) sendwol(targetMac5);
-          else if(localString.indexOf(F("computer4")) >0) sendwol(targetMac4);
-          else if(localString.indexOf(F("computer3")) >0) sendwol(targetMac3);
-          else if(localString.indexOf(F("computer2")) >0) sendwol(targetMac2);
-          else if(localString.indexOf(F("computer1")) >0) sendwol(targetMac1);
+			  // Example: if(localString.indexOf(F("HP%20server%20password")) >0) sendwol(targetMac100); 
+			  // so when you enter to box "HP server password" it boots the corresponding computer.
 
-                 
-          //clear the string
-          localString="";
- 
-        }
-      }
-    }
-  }
+					else if(localString.indexOf(F("computer49")) >0) sendwol(targetMac49);
+					else if(localString.indexOf(F("computer48")) >0) sendwol(targetMac48);
+					else if(localString.indexOf(F("computer47")) >0) sendwol(targetMac47);
+					else if(localString.indexOf(F("computer46")) >0) sendwol(targetMac46);
+					else if(localString.indexOf(F("computer45")) >0) sendwol(targetMac45);
+					else if(localString.indexOf(F("computer44")) >0) sendwol(targetMac44);
+					else if(localString.indexOf(F("computer43")) >0) sendwol(targetMac43);
+					else if(localString.indexOf(F("computer42")) >0) sendwol(targetMac42);
+					else if(localString.indexOf(F("computer41")) >0) sendwol(targetMac41);
+					else if(localString.indexOf(F("computer40")) >0) sendwol(targetMac40);
+					else if(localString.indexOf(F("computer39")) >0) sendwol(targetMac39);
+					else if(localString.indexOf(F("computer38")) >0) sendwol(targetMac38);
+					else if(localString.indexOf(F("computer37")) >0) sendwol(targetMac37);
+					else if(localString.indexOf(F("computer36")) >0) sendwol(targetMac36);
+					else if(localString.indexOf(F("computer35")) >0) sendwol(targetMac35);
+					else if(localString.indexOf(F("computer34")) >0) sendwol(targetMac34);
+					else if(localString.indexOf(F("computer33")) >0) sendwol(targetMac33);
+					else if(localString.indexOf(F("computer32")) >0) sendwol(targetMac32);
+					else if(localString.indexOf(F("computer31")) >0) sendwol(targetMac31);
+					else if(localString.indexOf(F("computer30")) >0) sendwol(targetMac30);
+					else if(localString.indexOf(F("computer29")) >0) sendwol(targetMac29);
+					else if(localString.indexOf(F("computer28")) >0) sendwol(targetMac28);
+					else if(localString.indexOf(F("computer27")) >0) sendwol(targetMac27);
+					else if(localString.indexOf(F("computer26")) >0) sendwol(targetMac26);
+					else if(localString.indexOf(F("computer25")) >0) sendwol(targetMac25);
+					else if(localString.indexOf(F("computer24")) >0) sendwol(targetMac24);
+					else if(localString.indexOf(F("computer23")) >0) sendwol(targetMac23);
+					else if(localString.indexOf(F("computer22")) >0) sendwol(targetMac22);
+					else if(localString.indexOf(F("computer21")) >0) sendwol(targetMac21);
+					else if(localString.indexOf(F("computer20")) >0) sendwol(targetMac20);
+					else if(localString.indexOf(F("computer19")) >0) sendwol(targetMac19);
+					else if(localString.indexOf(F("computer18")) >0) sendwol(targetMac18);
+					else if(localString.indexOf(F("computer17")) >0) sendwol(targetMac17);
+					else if(localString.indexOf(F("computer16")) >0) sendwol(targetMac16);
+					else if(localString.indexOf(F("computer15")) >0) sendwol(targetMac15);
+					else if(localString.indexOf(F("computer14")) >0) sendwol(targetMac14);
+					else if(localString.indexOf(F("computer13")) >0) sendwol(targetMac13);
+					else if(localString.indexOf(F("computer12")) >0) sendwol(targetMac12);
+					else if(localString.indexOf(F("computer11")) >0) sendwol(targetMac11);
+					else if(localString.indexOf(F("computer10")) >0) sendwol(targetMac10);
+					else if(localString.indexOf(F("computer09")) >0) sendwol(targetMac9);
+					else if(localString.indexOf(F("computer08")) >0) sendwol(targetMac8);
+					else if(localString.indexOf(F("computer07")) >0) sendwol(targetMac7);
+					else if(localString.indexOf(F("computer06")) >0) sendwol(targetMac6);
+					else if(localString.indexOf(F("computer05")) >0) sendwol(targetMac5);
+					else if(localString.indexOf(F("computer04")) >0) sendwol(targetMac4);
+					else if(localString.indexOf(F("computer03")) >0) sendwol(targetMac3);
+					else if(localString.indexOf(F("computer02")) >0) sendwol(targetMac2);
+					else if(localString.indexOf(F("computer01")) >0) sendwol(targetMac1);
+					
+					//clear the string
+					localString="";
+	 
+				}
+			}
+		}
+	}
+
+	if (millis() - lastConnection > repeatTimer) httpRequest();
+}
+
+
+void httpRequest() {
+
+  // close any connection before send a new request.
+
+  // This will free the socket on the WiFi shield
+
+	remoteClient.stop();
+
+  // if there's a successful connection:
+
+	if (remoteClient.connect(remoteServer, 80)) {
+
+		remoteClient.println(page);
+		//remoteClient.println("GET /latest.txt HTTP/1.1");
+		remoteClient.println(host);
+		//remoteClient.println("Host: www.arduino.com");
+
+		remoteClient.println("Connection: close");
+
+		remoteClient.println();
+
+
+		lastConnection = millis();
+
+	} else {
+
+    // if you couldn't make a connection:
+
+	//Serial.println("connection failed");
+
+	}
+   	
+	if(remoteString.indexOf(F("computer50")) >0) sendwol(targetMac50);
+	if(remoteString.indexOf(F("computer49")) >0) sendwol(targetMac49);
+	if(remoteString.indexOf(F("computer48")) >0) sendwol(targetMac48);
+	if(remoteString.indexOf(F("computer47")) >0) sendwol(targetMac47);
+	if(remoteString.indexOf(F("computer46")) >0) sendwol(targetMac46);
+	if(remoteString.indexOf(F("computer45")) >0) sendwol(targetMac45);
+	if(remoteString.indexOf(F("computer44")) >0) sendwol(targetMac44);
+	if(remoteString.indexOf(F("computer43")) >0) sendwol(targetMac43);
+	if(remoteString.indexOf(F("computer42")) >0) sendwol(targetMac42);
+	if(remoteString.indexOf(F("computer41")) >0) sendwol(targetMac41);
+	if(remoteString.indexOf(F("computer40")) >0) sendwol(targetMac40);
+	if(remoteString.indexOf(F("computer39")) >0) sendwol(targetMac39);
+	if(remoteString.indexOf(F("computer38")) >0) sendwol(targetMac38);
+	if(remoteString.indexOf(F("computer37")) >0) sendwol(targetMac37);
+	if(remoteString.indexOf(F("computer36")) >0) sendwol(targetMac36);
+	if(remoteString.indexOf(F("computer35")) >0) sendwol(targetMac35);
+	if(remoteString.indexOf(F("computer34")) >0) sendwol(targetMac34);
+	if(remoteString.indexOf(F("computer33")) >0) sendwol(targetMac33);
+	if(remoteString.indexOf(F("computer32")) >0) sendwol(targetMac32);
+	if(remoteString.indexOf(F("computer31")) >0) sendwol(targetMac31);
+	if(remoteString.indexOf(F("computer30")) >0) sendwol(targetMac30);
+	if(remoteString.indexOf(F("computer29")) >0) sendwol(targetMac29);
+	if(remoteString.indexOf(F("computer28")) >0) sendwol(targetMac28);
+	if(remoteString.indexOf(F("computer27")) >0) sendwol(targetMac27);
+	if(remoteString.indexOf(F("computer26")) >0) sendwol(targetMac26);
+	if(remoteString.indexOf(F("computer25")) >0) sendwol(targetMac25);
+	if(remoteString.indexOf(F("computer24")) >0) sendwol(targetMac24);
+	if(remoteString.indexOf(F("computer23")) >0) sendwol(targetMac23);
+	if(remoteString.indexOf(F("computer22")) >0) sendwol(targetMac22);
+	if(remoteString.indexOf(F("computer21")) >0) sendwol(targetMac21);
+	if(remoteString.indexOf(F("computer20")) >0) sendwol(targetMac20);
+	if(remoteString.indexOf(F("computer19")) >0) sendwol(targetMac19);
+	if(remoteString.indexOf(F("computer18")) >0) sendwol(targetMac18);
+	if(remoteString.indexOf(F("computer17")) >0) sendwol(targetMac17);
+	if(remoteString.indexOf(F("computer16")) >0) sendwol(targetMac16);
+	if(remoteString.indexOf(F("computer15")) >0) sendwol(targetMac15);
+	if(remoteString.indexOf(F("computer14")) >0) sendwol(targetMac14);
+	if(remoteString.indexOf(F("computer13")) >0) sendwol(targetMac13);
+	if(remoteString.indexOf(F("computer12")) >0) sendwol(targetMac12);
+	if(remoteString.indexOf(F("computer11")) >0) sendwol(targetMac11);
+	if(remoteString.indexOf(F("computer10")) >0) sendwol(targetMac10);
+	if(remoteString.indexOf(F("computer09")) >0) sendwol(targetMac9);
+	if(remoteString.indexOf(F("computer08")) >0) sendwol(targetMac8);
+	if(remoteString.indexOf(F("computer07")) >0) sendwol(targetMac7);
+	if(remoteString.indexOf(F("computer06")) >0) sendwol(targetMac6);
+	if(remoteString.indexOf(F("computer05")) >0) sendwol(targetMac5);
+	if(remoteString.indexOf(F("computer04")) >0) sendwol(targetMac4);
+	if(remoteString.indexOf(F("computer03")) >0) sendwol(targetMac3);
+	if(remoteString.indexOf(F("computer02")) >0) sendwol(targetMac2);
+	if(remoteString.indexOf(F("computer01")) >0) sendwol(targetMac1);
+	remoteString="";
 }
