@@ -28,6 +28,6 @@ Localserver&Remoteserver.ino: Both projects above combined. Note that both appro
 Unfortunately ENC28j60 libraries are not capable of handling HTTPS traffic as of yet hence why both approaches require HTTP connection.
 
 
-
-
+What to do:
+1) Will share PHP/MySQL website for remote server approach, function wise it's complete but needs some polishing.
 
