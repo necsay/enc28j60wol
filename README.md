@@ -12,7 +12,7 @@ This scenario is useful for networks using Dynamic IP or Static IP. By forwardin
 
 Remoteserver.ino: Wake up computers via HTTP GET requests to a selected web server.
 
-This scenario is useful for networks behind CGNAT. As the user is behind a dual nat configuration forwarding ports is not possible.
+This scenario is useful for networks behind CGNAT. As the user is behind a dual nat configuration, forwarding ports is not possible.
 This approach reverts the operation so the connection is not initiated by the client on the internet. Rather it is the arduino that initiates the connection and there is no need for port forwarding, this approach is even more secure. 
 
 Localserver&Remoteserver.ino: Both projects above combined.
