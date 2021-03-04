@@ -22,7 +22,7 @@ Remoteserver.ino: Wake up computers via HTTP GET requests to user defined web se
 
 This scenario is useful for networks behind CGNAT. As the user is behind a dual nat configuration, forwarding ports is not possible.
 
-This approach reverts the operation so the connection is not initiated by the client on the internet. Rather it is the arduino that initiates the connection and there is no need for port forwarding. 
+This approach reverts the operation so the connection is not initiated by the client on the internet. Rather it is the arduino that initiates the connection hence there is no need for port forwarding. 
 
 Localserver&Remoteserver.ino: Both projects above combined. Note that both approaches are using GET requests.
 Unfortunately ENC28j60 libraries are not capable of handling HTTPS traffic as of yet hence why both approaches require HTTP connection.
