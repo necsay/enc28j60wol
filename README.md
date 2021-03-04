@@ -18,7 +18,7 @@ LocalHTTPserver.ino: Wake up computers on local network by hosting an HTTP page.
 This scenario is useful for networks using Dynamic IP or Static IP. By forwarding selected port on the router a local WOL server can be set up.
 
 
-Remoteserver.ino: Wake up computers via HTTP GET requests to a selected web server.
+Remoteserver.ino: Wake up computers via HTTP GET requests to user defined web server(s).
 
 This scenario is useful for networks behind CGNAT. As the user is behind a dual nat configuration, forwarding ports is not possible.
 
