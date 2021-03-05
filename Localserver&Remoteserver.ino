@@ -260,7 +260,7 @@ void httpRequest() {
 
 	remoteClient.stop();
 
-	if (remoteClient.connect(remoteServer, 80)) { //if the connection was successful
+	if (remoteClient.connect(remoteServer, port)) { //if the connection was successful
 
 		remoteClient.println(page);
 		//Instead of defining a const char you could also use the following line
