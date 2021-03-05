@@ -13,7 +13,7 @@ byte gateway[] = {192, 168, 1, 1}; // Gateway
 
 
 
-EthernetServer localServer(80);         //server port 80 HTTP
+EthernetServer localServer(80);         //local server will be using port 80 (HTTP)
 EthernetUDP udp;
 
 const char remoteServer[] = "www.arduino.cc"; // Remote server address for connection
@@ -22,6 +22,7 @@ const char page[]= "GET /latest.txt HTTP/1.1"; // Request http://www.arduino.cc/
  
  //remote server
 EthernetClient remoteClient;
+byte port = 80;          //Port to connect, set to default HTTP
 
 String localString;
 String remoteString;
