@@ -20,6 +20,7 @@ const char page[]= "GET /latest.txt HTTP/1.1"; // request www.arduino.cc/latest.
  
  //remote server
 EthernetClient remoteClient;
+byte port = 80;          //Port to connect, set to default HTTP
 
 
 String remoteString;
@@ -145,7 +146,7 @@ void httpRequest() {
 
 	remoteClient.stop();
 
-	if (remoteClient.connect(remoteServer, 80)) { //if the connection was successful
+	if (remoteClient.connect(remoteServer, port)) { //if the connection was successful
 
 		remoteClient.println(page);
 		//Instead of defining a const char you could also use the following line
