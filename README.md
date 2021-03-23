@@ -29,5 +29,7 @@ Unfortunately ENC28j60 libraries are not capable of handling HTTPS traffic as of
 
 
 What to do:
-1) Will share PHP/MySQL website for remote server approach, function wise it's complete but needs some polishing.
+1) Work on UDP
+2) Work on ipv6
+3) Will share PHP/MySQL website for remote server approach, function wise it's complete but needs some polishing.
 
